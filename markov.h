@@ -5,16 +5,21 @@
 #include <string>
 #include <map>
 
+using std::vector;
+using std::string;
+using std::map;
+
 class markov {
    private:
-    std::map<std::vector<std::string>, std::vector<std::string>> map;
+    map<vector<string>, vector<string>> map;
 
    public:
     markov();
-    markov(std::vector<std::string> src);
+    markov(vector<string> src);
 
-    std::string gen_chain(int lim);
-    std::string ind_to_string(std::vector<std::string> key, std::vector<std::string> val);
+    string gen_chain(int lim);
+    string ind_to_string(vector<string> key, vector<string> val);
+    void print();
 };
 
 #endif

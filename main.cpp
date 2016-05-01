@@ -13,9 +13,8 @@ using std::vector;
 using std::ifstream;
 using std::stringstream;
 
-markov::markov() {}
 markov::markov(vector<string> src) {
-    for (int i = 0; i < (int)src.size() - 1; i++) {
+    for (int i = 0; i < (int)src.size() - 2; i++) {
         vector<string> key;
         key.push_back(src[i]);
         key.push_back(src[i + 1]);
@@ -26,8 +25,8 @@ markov::markov(vector<string> src) {
         else {
             map[key].push_back(src[i + 2]);
         }
-        cout << ind_to_string(key, map[key]) << endl;
     }
+    print();
 }
 
 string markov::gen_chain(int lim) {
@@ -49,13 +48,19 @@ string markov::ind_to_string(vector<string> key, vector<string> val) {
     return buff.substr(0, buff.size() - 2) + "]";
 }
 
+void markov::print() {
+    for(auto const &e : map) {
+        cout << ind_to_string(e.first, map[e.first]) << endl;
+    }
+}
+
 int main(int argc, char *argv[]) {
     if (argc < 2) {
         cout << "Error: Wrong number of arguments" << endl
              << "Usage: ./main <filename> <length>" << endl;
         return 1;
     }
-    int max_len = argc == 3 ? std::stoi(argv[2]) : -1;
+    int max_len = argc == 3 ? std::atoi(argv[2]) : -1;
     string filename = string(argv[1]);
     string line;
     ifstream infile(filename);
@@ -67,9 +72,9 @@ int main(int argc, char *argv[]) {
             text.push_back("");
         }
     }
-    for (int i = 0; i < (int)text.size(); i++) {
-        cout << text.at(i) << endl;
-    }
+    //for (int i = 0; i < (int)text.size(); i++) {
+    //    cout << text.at(i) << endl;
+    //}
     markov::markov m(text);
     m.gen_chain(max_len);
     return 0;

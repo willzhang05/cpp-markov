@@ -30,14 +30,37 @@ markov::markov(vector<string> src) {
 }
 
 string markov::gen_chain(int lim) {
-    string buff;
+    string buff, cur_val = " ";
+    vector<string> cur_key = {"", ""}, cur_vals = map[cur_key];
+    int ind, sent = 0;
+    std::srand(time(0));
     if (lim < 0) {
-        string cur_val;
-        while (cur_val != "") {
+        while (cur_val != "") {  //(cur_val.find(".") != string::npos) {//(cur_val != "") {
+            ind = std::rand() % cur_vals.size();
+            cur_val = cur_vals[ind];
+            buff += cur_val + " ";
+
+            cur_key[0] = cur_key[1];
+            cur_key[1] = cur_val;
+            cur_vals = map[cur_key];
+        }
+        buff = buff.substr(0, buff.size() - 1);
+    } else {
+        while (sent < lim) {
+            ind = std::rand() % cur_vals.size();
+            cur_val = cur_vals[ind];
+            buff += cur_val + " ";
+            if (cur_val.find(".") != string::npos) {  // cur_val[cur_val.size() - 1] == '.') {
+                buff = buff.substr(0, buff.size() - 1);
+                sent++;
+            }
+            cur_key[0] = cur_key[1];
+            cur_key[1] = cur_val;
+            cur_vals = map[cur_key];
         }
     }
 
-    return "";
+    return buff;
 }
 
 string markov::ind_to_string(vector<string> key, vector<string> val) {
@@ -49,7 +72,7 @@ string markov::ind_to_string(vector<string> key, vector<string> val) {
 }
 
 void markov::print() {
-    for(auto const &e : map) {
+    for (auto const &e : map) {
         cout << ind_to_string(e.first, map[e.first]) << endl;
     }
 }
@@ -67,15 +90,15 @@ int main(int argc, char *argv[]) {
     vector<string> text;
     while (getline(infile, line, ' ')) {
         text.push_back(line);
-        if (line.at(line.size() - 1) == '.') {
+        if (line[line.size() - 1] == '.') {
             text.push_back("");
             text.push_back("");
         }
     }
-    //for (int i = 0; i < (int)text.size(); i++) {
+    // for (int i = 0; i < (int)text.size(); i++) {
     //    cout << text.at(i) << endl;
     //}
     markov::markov m(text);
-    m.gen_chain(max_len);
+    cout << m.gen_chain(max_len) << endl;
     return 0;
 }

@@ -1,9 +1,9 @@
 #ifndef MARKOV_HEADER
 #define MARKOV_HEADER
 
-#include <map>
 #include <string>
 #include <vector>
+#include <map>
 
 using std::vector;
 using std::string;

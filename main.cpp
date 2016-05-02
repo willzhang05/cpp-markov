@@ -1,9 +1,9 @@
-#include <fstream>
 #include <iostream>
-#include <map>
 #include <sstream>
+#include <fstream>
 #include <string>
 #include <vector>
+#include <map>
 #include "markov.h"
 
 using std::cout;
@@ -20,9 +20,9 @@ markov::markov(vector<string> src) {
         key.push_back(src[i + 1]);
         vector<string> values;
         values.push_back(src[i + 2]);
-        if (map.find(key) == map.end())
+        if (map.find(key) == map.end()) {
             map[key] = values;
-        else {
+        } else {
             map[key].push_back(src[i + 2]);
         }
     }
@@ -33,33 +33,29 @@ string markov::gen_chain(int lim) {
     string buff, cur_val = " ";
     vector<string> cur_key = {"", ""}, cur_vals = map[cur_key];
     int ind, sent = 0;
-    std::srand(time(0));
     if (lim < 0) {
-        while (cur_val != "") {  //(cur_val.find(".") != string::npos) {//(cur_val != "") {
+        while (cur_val != "" && cur_vals.size() != 0) {
             ind = std::rand() % cur_vals.size();
             cur_val = cur_vals[ind];
             buff += cur_val + " ";
-
             cur_key[0] = cur_key[1];
             cur_key[1] = cur_val;
             cur_vals = map[cur_key];
         }
-        buff = buff.substr(0, buff.size() - 1);
-    } else {
-        while (sent < lim) {
-            ind = std::rand() % cur_vals.size();
-            cur_val = cur_vals[ind];
-            buff += cur_val + " ";
-            if (cur_val.find(".") != string::npos) {  // cur_val[cur_val.size() - 1] == '.') {
-                buff = buff.substr(0, buff.size() - 1);
-                sent++;
-            }
-            cur_key[0] = cur_key[1];
-            cur_key[1] = cur_val;
-            cur_vals = map[cur_key];
-        }
+        return buff.substr(0, buff.size() - 1);
     }
-
+    while (sent < lim && cur_vals.size() != 0) {
+        ind = std::rand() % cur_vals.size();
+        cur_val = cur_vals[ind];
+        buff += cur_val + " ";
+        if (cur_val.find(".") != string::npos) {
+            buff = buff.substr(0, buff.size() - 1);
+            sent++;
+        }
+        cur_key[0] = cur_key[1];
+        cur_key[1] = cur_val;
+        cur_vals = map[cur_key];
+    }
     return buff;
 }
 
@@ -83,21 +79,27 @@ int main(int argc, char *argv[]) {
              << "Usage: ./main <filename> <length>" << endl;
         return 1;
     }
+    std::srand(time(0));
     int max_len = argc == 3 ? std::atoi(argv[2]) : -1;
     string filename = string(argv[1]);
     string line;
     ifstream infile(filename);
     vector<string> text;
-    while (getline(infile, line, ' ')) {
-        text.push_back(line);
-        if (line[line.size() - 1] == '.') {
-            text.push_back("");
-            text.push_back("");
+    while (getline(infile, line)) {
+        stringstream in(line);
+        string token;
+        while (getline(in, token, ' ')) {
+            text.push_back(token);
+            if (token[token.size() - 1] == '.') {
+                text.push_back("");
+                text.push_back("");
+            }
         }
     }
-    // for (int i = 0; i < (int)text.size(); i++) {
-    //    cout << text.at(i) << endl;
-    //}
+    text.push_back("");
+    /*for (int i = 0; i < (int)text.size(); i++) {
+        cout << text.at(i) + " ";
+    }*/
     markov::markov m(text);
     cout << m.gen_chain(max_len) << endl;
     return 0;

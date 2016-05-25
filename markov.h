@@ -15,7 +15,7 @@ class markov {
 
    public:
     markov();
-    markov(vector<string> src);
+    markov(vector<string> src, bool verbose);
 
     string gen_chain(int lim);
     string ind_to_string(vector<string> key, vector<string> val);

@@ -13,7 +13,7 @@ using std::vector;
 using std::ifstream;
 using std::stringstream;
 
-markov::markov(vector<string> src) {
+markov::markov(vector<string> src, bool verbose) {
     for (int i = 0; i < (int)src.size() - 2; i++) {
         vector<string> key;
         key.push_back(src[i]);
@@ -26,7 +26,9 @@ markov::markov(vector<string> src) {
             map[key].push_back(src[i + 2]);
         }
     }
-    print();
+    if(verbose) {
+        print();
+    }
 }
 
 string markov::gen_chain(int lim) {
@@ -100,7 +102,7 @@ int main(int argc, char *argv[]) {
     /*for (int i = 0; i < (int)text.size(); i++) {
         cout << text.at(i) + " ";
     }*/
-    markov::markov m(text);
+    markov::markov m(text, false);
     cout << m.gen_chain(max_len) << endl;
     return 0;
 }

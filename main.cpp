@@ -1,9 +1,10 @@
-#include <iostream>
-#include <sstream>
+#include <cstring>
 #include <fstream>
+#include <iostream>
+#include <map>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <map>
 #include "markov.h"
 
 using std::cout;
@@ -26,7 +27,7 @@ markov::markov(vector<string> src, bool verbose) {
             map[key].push_back(src[i + 2]);
         }
     }
-    if(verbose) {
+    if (verbose) {
         print();
     }
 }
@@ -102,7 +103,18 @@ int main(int argc, char *argv[]) {
     /*for (int i = 0; i < (int)text.size(); i++) {
         cout << text.at(i) + " ";
     }*/
-    markov::markov m(text, false);
-    cout << m.gen_chain(max_len) << endl;
+    markov::markov *m;
+    /*const char *verbose = "-v";
+    for(int i = 0; i < argc; i++) {
+        if(std::strcmp(argv[i], verbose) == 0) {
+            m = new markov::markov(text, true);
+            break;
+        }
+        if(i == argc - 1) {*/
+    m = new markov::markov(text, false);
+    /*   }
+    }*/
+    cout << m->gen_chain(max_len) << endl;
+    delete m;
     return 0;
 }
